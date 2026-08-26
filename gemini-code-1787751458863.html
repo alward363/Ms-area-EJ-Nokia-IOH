@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Pencari Site ID</title>
+    <!-- Memanggil library SheetJS untuk membaca Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        input, button { font-size: 16px; padding: 10px; margin: 5px 0; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <h2>Pencarian Site ID IOH</h2>
+    <input type="text" id="inputSite" placeholder="Masukkan Site ID...">
+    <button onclick="cariSite()">Cari Data</button>
+    
+    <div id="status">Loading data Excel...</div>
+    <pre id="hasil"></pre>
+
+    <script>
+        let workbook = null;
+        // Ganti dengan nama file Excel Anda yang di-upload ke GitHub
+        const excelFile = "DUTY ROASTER MS IOH _0826.xlsx"; 
+
+        // Mengambil dan membaca file Excel saat web dibuka
+        fetch(excelFile)
+            .then(res => res.arrayBuffer())
+            .then(data => {
+                workbook = XLSX.read(data, {type: "array"});
+                document.getElementById("status").innerText = "Data siap digunakan! Silakan cari Site ID.";
+            })
+            .catch(err => {
+                document.getElementById("status").innerText = "Gagal memuat file Excel.";
+                console.error(err);
+            });
+
+        function cariSite() {
+            if (!workbook) return alert("Tunggu sebentar, data masih dimuat.");
+            
+            const keyword = document.getElementById("inputSite").value.toLowerCase();
+            if (!keyword) return alert("Masukkan Site ID!");
+
+            let hasilTeks = "";
+            let ketemu = false;
+
+            // Mencari di dalam Sheet bernama 'SITE LIST ID'
+            const sheetName = "SITE LIST ID"; 
+            if (workbook.SheetNames.includes(sheetName)) {
+                const worksheet = workbook.Sheets[sheetName];
+                // Mengubah sheet menjadi bentuk array objek (JSON)
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+
+                jsonData.forEach(row => {
+                    // Cek di seluruh nilai dalam satu baris (case-insensitive)
+                    const rowString = JSON.stringify(row).toLowerCase();
+                    if (rowString.includes(keyword)) {
+                        ketemu = true;
+                        hasilTeks += `New Site ID : ${row["New Site ID IOH"] || "-"}\n`;
+                        hasilTeks += `Old Site ID : ${row["OLD SITE ID"] || "-"}\n`;
+                        hasilTeks += `Nama Site   : ${row["NEW SITE NAME ACRONIM ID"] || "-"}\n`;
+                        hasilTeks += `FME1 / CM   : ${row["Name FME1 / CM"] || "-"}\n`;
+                        hasilTeks += `Subcont     : ${row["SUBCONT"] || "-"}\n`;
+                        hasilTeks += `==============================\n`;
+                    }
+                });
+            }
+
+            document.getElementById("hasil").innerText = ketemu ? hasilTeks : "Site ID tidak ditemukan.";
+        }
+    </script>
+
+</body>
+</html>
