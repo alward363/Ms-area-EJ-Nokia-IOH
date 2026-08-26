@@ -7,69 +7,82 @@
     <!-- Memanggil library SheetJS untuk membaca Excel -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        input, button { font-size: 16px; padding: 10px; margin: 5px 0; }
-        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        input { font-size: 16px; padding: 10px; width: calc(100% - 110px); margin-bottom: 10px; box-sizing: border-box; }
+        button { font-size: 16px; padding: 10px; width: 100px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background-color: #0056b3; }
+        #status { margin-bottom: 15px; font-weight: bold; color: #333; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 14px; line-height: 1.6; border: 1px solid #ddd; white-space: pre-wrap; font-family: sans-serif; }
     </style>
 </head>
 <body>
 
     <h2>Pencarian Site ID IOH</h2>
-    <input type="text" id="inputSite" placeholder="Masukkan Site ID...">
-    <button onclick="cariSite()">Cari Data</button>
+    <div>
+        <input type="text" id="inputSite" placeholder="Masukkan Site ID...">
+        <button onclick="cariSite()">Cari Data</button>
+    </div>
     
-    <div id="status">Loading data Excel...</div>
-    <pre id="hasil"></pre>
+    <div id="status">⏳ Loading data Excel, tunggu sebentar...</div>
+    <pre id="hasil">Hasil pencarian akan muncul di sini...</pre>
 
     <script>
         let workbook = null;
-        // Ganti dengan nama file Excel Anda yang di-upload ke GitHub
         const excelFile = "DUTY ROASTER MS IOH _0826.xlsx"; 
 
-        // Mengambil dan membaca file Excel saat web dibuka
+        // Mengambil dan membaca file Excel
         fetch(excelFile)
             .then(res => res.arrayBuffer())
             .then(data => {
                 workbook = XLSX.read(data, {type: "array"});
-                document.getElementById("status").innerText = "Data siap digunakan! Silakan cari Site ID.";
+                document.getElementById("status").innerText = "✅ Data siap digunakan! Silakan cari Site ID.";
             })
             .catch(err => {
-                document.getElementById("status").innerText = "Gagal memuat file Excel.";
+                document.getElementById("status").innerText = "❌ Gagal memuat file Excel.";
                 console.error(err);
             });
 
         function cariSite() {
             if (!workbook) return alert("Tunggu sebentar, data masih dimuat.");
             
-            const keyword = document.getElementById("inputSite").value.toLowerCase();
-            if (!keyword) return alert("Masukkan Site ID!");
+            const keyword = document.getElementById("inputSite").value.toLowerCase().trim();
+            if (!keyword) return alert("Masukkan Site ID terlebih dahulu!");
 
             let hasilTeks = "";
             let ketemu = false;
 
-            // Mencari di dalam Sheet bernama 'SITE LIST ID'
             const sheetName = "SITE LIST ID"; 
             if (workbook.SheetNames.includes(sheetName)) {
                 const worksheet = workbook.Sheets[sheetName];
-                // Mengubah sheet menjadi bentuk array objek (JSON)
                 const jsonData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
 
                 jsonData.forEach(row => {
-                    // Cek di seluruh nilai dalam satu baris (case-insensitive)
                     const rowString = JSON.stringify(row).toLowerCase();
                     if (rowString.includes(keyword)) {
                         ketemu = true;
-                        hasilTeks += `New Site ID : ${row["New Site ID IOH"] || "-"}\n`;
-                        hasilTeks += `Old Site ID : ${row["OLD SITE ID"] || "-"}\n`;
-                        hasilTeks += `Nama Site   : ${row["NEW SITE NAME ACRONIM ID"] || "-"}\n`;
-                        hasilTeks += `FME1 / CM   : ${row["Name FME1 / CM"] || "-"}\n`;
-                        hasilTeks += `Subcont     : ${row["SUBCONT"] || "-"}\n`;
-                        hasilTeks += `==============================\n`;
+                        // Beberapa nama kolom di Excel kadang ada spasinya (seperti ' OLD SITE NAME SIMPLIFY')
+                        const oldSiteName = row[" OLD SITE NAME SIMPLIFY"] || row["OLD SITE NAME SIMPLIFY"] || "-";
+                        
+                        hasilTeks += `Berdasarkan sheet SITE LIST ID, berikut adalah rincian informasi untuk site ID tersebut:\n\n`;
+                        hasilTeks += `New Site ID IOH: ${row["New Site ID IOH"] || "-"}\n\n`;
+                        hasilTeks += `Old Site ID: ${row["OLD SITE ID"] || "-"}\n\n`;
+                        hasilTeks += `New Site Name: ${row["NEW SITE NAME"] || "-"}\n\n`;
+                        hasilTeks += `Old Site Name: ${oldSiteName}\n\n`;
+                        hasilTeks += `Status Site: ${row["STATUS SITE"] || "-"} (${row["Status on CAV"] || "-"})\n\n`;
+                        hasilTeks += `Sales Area (SA): ${row["New SA (Sales Area)"] || "-"}\n\n`;
+                        hasilTeks += `Region: ${row["New Region"] || "-"} (${row["Area EEJ or WEJ"] || "-"})\n\n`;
+                        hasilTeks += `Micro Cluster: ${row["New Micro Cluster"] || "-"}\n\n`;
+                        hasilTeks += `Koordinat: Latitude ${row["LATITUDE"] || "-"}, Longitude ${row["LONGITUDE"] || "-"}\n\n`;
+                        hasilTeks += `Cluster CM / FM Office: ${row["FM Office"] || "-"}\n\n`;
+                        hasilTeks += `FME1 / CM: ${row["FME Synergy CM"] || "-"} (No. Kontak: ${row["1st NUMBER FME1 / CM"] || "-"})\n\n`;
+                        hasilTeks += `Subkontraktor: ${row["SUBCONT"] || "-"}\n\n`;
+                        hasilTeks += `RTS Adyawinsa: ${row["Name RTS Adyawinsa"] || "-"} (No. Kontak: ${row["CONTACT RTS Adyawinsa"] || "-"})\n\n`;
+                        hasilTeks += `=========================================\n\n`;
                     }
                 });
             }
 
-            document.getElementById("hasil").innerText = ketemu ? hasilTeks : "Site ID tidak ditemukan.";
+            document.getElementById("hasil").innerText = ketemu ? hasilTeks.trim() : `Site ID "${keyword}" tidak ditemukan dalam data.`;
         }
     </script>
 
