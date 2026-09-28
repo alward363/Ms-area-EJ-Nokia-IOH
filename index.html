@@ -3,88 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tool Pencari Site ID</title>
-    <!-- Memanggil library SheetJS untuk membaca Excel -->
+    <title>Dashboard & Site Technical Tools IOH</title>
+    <!-- Memanggil library SheetJS untuk membaca file Excel Duty Roaster -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-        input { font-size: 16px; padding: 10px; width: calc(100% - 110px); margin-bottom: 10px; box-sizing: border-box; }
-        button { font-size: 16px; padding: 10px; width: 100px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; }
-        button:hover { background-color: #0056b3; }
-        #status { margin-bottom: 15px; font-weight: bold; color: #333; }
-        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 14px; line-height: 1.6; border: 1px solid #ddd; white-space: pre-wrap; font-family: sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; padding-bottom: 30px; }
+        
+        header { 
+            background: linear-gradient(135deg, #1f4e78, #0d2c4a); 
+            color: white; 
+            padding: 15px; 
+            text-align: center; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
+        }
+        header h1 { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
+        header p { font-size: 0.8rem; opacity: 0.85; }
+
+        .container { padding: 15px; max-width: 800px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .card-title { font-size: 0.95rem; font-weight: 700; color: #1f4e78; margin-bottom: 12px; border-bottom: 2px solid #eef2f5; padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        
+        /* Navigation Tabs */
+        .nav-tabs { display: flex; gap: 6px; margin-bottom: 15px; background: #eef2f5; padding: 5px; border-radius: 10px; overflow-x: auto; }
+        .nav-tab { flex: 1; min-width: 120px; padding: 10px; border: none; background: transparent; color: #555; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; text-align: center; white-space: nowrap; transition: 0.2s; }
+        .nav-tab.active { background: #1f4e78; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+        label { font-size: 0.85rem; font-weight: 600; color: #555; display: block; margin-bottom: 6px; }
+        textarea, input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem; margin-bottom: 10px; }
+        textarea { height: 90px; font-family: monospace; font-size: 0.78rem; }
+        
+        button.btn-action { width: 100%; background-color: #1f4e78; color: white; border: none; padding: 11px; border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button.btn-action:active { background-color: #153452; }
+
+        .data-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+        .data-row:last-child { border-bottom: none; }
+        .data-label { color: #666; font-weight: 500; flex: 1; padding-right: 10px; }
+        .data-value { color: #111; font-weight: 600; flex: 1.2; text-align: right; word-break: break-word; }
+        
+        .badge { display: inline-block; padding: 2px 7px; background: #e3f2fd; color: #1f4e78; border-radius: 4px; font-weight: bold; font-size: 0.78rem; }
+        .badge-green { background: #e8f5e9; color: #2e7d32; }
+        .badge-orange { background: #fff3e0; color: #e65100; }
+        
+        #status { font-weight: bold; font-size: 0.85rem; margin-bottom: 10px; padding: 8px; border-radius: 6px; background: #f0f4f8; }
+        pre { background: #f8f9fa; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 0.82rem; line-height: 1.5; border: 1px solid #e2e8f0; white-space: pre-wrap; font-family: inherit; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <h2>Pencarian Site ID IOH</h2>
-    <div>
-        <input type="text" id="inputSite" placeholder="Masukkan Site ID...">
-        <button onclick="cariSite()">Cari Data</button>
-    </div>
+<header>
+    <h1>📱 Telecom Site & Technical Tools</h1>
+    <p>Integrated Toolset IOH (Duty Roaster, BOQ & Project Tracker)</p>
+</header>
+
+<div class="container">
     
-    <div id="status">⏳ Loading data Excel, tunggu sebentar...</div>
-    <pre id="hasil">Hasil pencarian akan muncul di sini...</pre>
+    <!-- Tab Navigation Header -->
+    <div class="nav-tabs">
+        <button id="tabBtnRoaster" class="nav-tab active" onclick="switchMainTab('roaster')">🔍 Duty Roaster</button>
+        <button id="tabBtnBoq" class="nav-tab" onclick="switchMainTab('boq')">⚙️ BOQ Technical</button>
+        <button id="tabBtnTracker" class="nav-tab" onclick="switchMainTab('tracker')">📊 Project Tracker</button>
+    </div>
 
-    <script>
-        let workbook = null;
-        const excelFile = "DUTY ROASTER MS IOH _0826.xlsx"; 
-
-        // Mengambil dan membaca file Excel
-        fetch(excelFile)
-            .then(res => res.arrayBuffer())
-            .then(data => {
-                workbook = XLSX.read(data, {type: "array"});
-                document.getElementById("status").innerText = "✅ Data siap digunakan! Silakan cari Site ID.";
-            })
-            .catch(err => {
-                document.getElementById("status").innerText = "❌ Gagal memuat file Excel.";
-                console.error(err);
-            });
-
-        function cariSite() {
-            if (!workbook) return alert("Tunggu sebentar, data masih dimuat.");
+    <!-- ==================== TAB 1: DUTY ROASTER EXCEL ==================== -->
+    <div id="sectionRoaster">
+        <div class="card">
+            <div class="card-title">🔍 Pencarian Site ID (Duty Roaster Excel)</div>
+            <div id="status">⏳ Loading file Excel, tunggu sebentar...</div>
             
-            const keyword = document.getElementById("inputSite").value.toLowerCase().trim();
-            if (!keyword) return alert("Masukkan Site ID terlebih dahulu!");
+            <label for="inputSite">Masukkan Site ID IOH / Old Site ID:</label>
+            <input type="text" id="inputSite" placeholder="Contoh: 16SBY0333..." onkeyup="if(event.key==='Enter') cariSite()">
+            <button class="btn-action" onclick="cariSite()">🔍 Cari Data Site</button>
+        </div>
 
-            let hasilTeks = "";
-            let ketemu = false;
+        <div class="card">
+            <div class="card-title">📄 Rincian Informasi Site</div>
+            <pre id="hasil">Hasil pencarian akan muncul di sini...</pre>
+        </div>
+    </div>
 
-            const sheetName = "SITE LIST ID"; 
-            if (workbook.SheetNames.includes(sheetName)) {
-                const worksheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+    <!-- ==================== TAB 2 & 3 CONTAINER (BOQ & TRACKER) ==================== -->
+    <div id="sectionPasteTools" class="hidden">
+        <div class="card">
+            <div class="card-title">1. Paste Raw Data dari Excel</div>
+            <label for="rawData">Tempel 1 atau beberapa baris data Excel di sini:</label>
+            <textarea id="rawData" placeholder="Paste baris data Excel berpisah TAB di sini..."></textarea>
+            <button class="btn-action" onclick="processPasteData()">⚡ Analisis Data</button>
+        </div>
 
-                jsonData.forEach(row => {
-                    const rowString = JSON.stringify(row).toLowerCase();
-                    if (rowString.includes(keyword)) {
-                        ketemu = true;
-                        // Beberapa nama kolom di Excel kadang ada spasinya (seperti ' OLD SITE NAME SIMPLIFY')
-                        const oldSiteName = row[" OLD SITE NAME SIMPLIFY"] || row["OLD SITE NAME SIMPLIFY"] || "-";
-                        
-                        hasilTeks += `Berdasarkan sheet SITE LIST ID, berikut adalah rincian informasi untuk site ID tersebut:\n\n`;
-                        hasilTeks += `New Site ID IOH: ${row["New Site ID IOH"] || "-"}\n\n`;
-                        hasilTeks += `Old Site ID: ${row["OLD SITE ID"] || "-"}\n\n`;
-                        hasilTeks += `New Site Name: ${row["NEW SITE NAME"] || "-"}\n\n`;
-                        hasilTeks += `Old Site Name: ${oldSiteName}\n\n`;
-                        hasilTeks += `Status Site: ${row["STATUS SITE"] || "-"} (${row["Status on CAV"] || "-"})\n\n`;
-                        hasilTeks += `Sales Area (SA): ${row["New SA (Sales Area)"] || "-"}\n\n`;
-                        hasilTeks += `Region: ${row["New Region"] || "-"} (${row["Area EEJ or WEJ"] || "-"})\n\n`;
-                        hasilTeks += `Micro Cluster: ${row["New Micro Cluster"] || "-"}\n\n`;
-                        hasilTeks += `Koordinat: Latitude ${row["LATITUDE"] || "-"}, Longitude ${row["LONGITUDE"] || "-"}\n\n`;
-                        hasilTeks += `Cluster CM / FM Office: ${row["FM Office"] || "-"}\n\n`;
-                        hasilTeks += `FME1 / CM: ${row["FME Synergy CM"] || "-"} (No. Kontak: ${row["1st NUMBER FME1 / CM"] || "-"})\n\n`;
-                        hasilTeks += `Subkontraktor: ${row["SUBCONT"] || "-"}\n\n`;
-                        hasilTeks += `RTS Adyawinsa: ${row["Name RTS Adyawinsa"] || "-"} (No. Kontak: ${row["CONTACT RTS Adyawinsa"] || "-"})\n\n`;
-                        hasilTeks += `=========================================\n\n`;
-                    }
-                });
-            }
+        <div class="card">
+            <div class="card-title">2. Pilih Site Terdeteksi</div>
+            <select id="siteSelect" onchange="displaySummary()">
+                <option value="">-- Pilih Site ID --</option>
+            </select>
+        </div>
 
-            document.getElementById("hasil").innerText = ketemu ? hasilTeks.trim() : `Site ID "${keyword}" tidak ditemukan dalam data.`;
+        <!-- RESULT VIEW: BOQ TECHNICAL -->
+        <div id="viewBoq" class="hidden">
+            <div class="card">
+                <div class="card-title">📌 Informasi Site & Identitas</div>
+                <div id="boqSec1"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">⚙️ Scope of Work (SOW)</div>
+                <div id="boqSec2"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">📡 Konfigurasi Hardware & Band</div>
+                <div id="boqSec3"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">⚡ Power Consumption (Daya)</div>
+                <div id="boqSec4"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">📦 BOQ Material Perangkat Nokia</div>
+                <div id="boqSec5"></div>
+            </div>
+        </div>
+
+        <!-- RESULT VIEW: PROJECT TRACKER -->
+        <div id="viewTracker" class="hidden">
+            <div class="card">
+                <div class="card-title">📍 Identitas & Lokasi Site Project</div>
+                <div id="trSec1"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">👥 Partner & Vendor Responsibility</div>
+                <div id="trSec2"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">📄 Document, LOI, POR & SPO Status</div>
+                <div id="trSec3"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">🏗️ Progress Field Deployment & Milestone</div>
+                <div id="trSec4"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">⚡ Power System (PLN) & CAF Status</div>
+                <div id="trSec5"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">📦 Material Hardware Deployment (2.6G / 700M)</div>
+                <div id="trSec6"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let currentTab = 'roaster';
+    let workbook = null;
+    let parsedSites = {};
+    const excelFile = "DUTY ROASTER MS IOH _0826.xlsx"; 
+
+    // Auto Load File Excel Duty Roaster saat pertama buka
+    fetch(excelFile)
+        .then(res => res.arrayBuffer())
+        .then(data => {
+            workbook = XLSX.read(data, {type: "array"});
+            document.getElementById("status").innerHTML = "✅ <span style='color:green;'>Data Duty Roaster siap digunakan!</span>";
+        })
+        .catch(err => {
+            document.getElementById("status").innerHTML = "❌ <span style='color:red;'>Gagal memuat file Excel Duty Roaster.</span>";
+            console.error(err);
+        });
+
+    // Switch Navigation Main Tab
+    function switchMainTab(tab) {
+        currentTab = tab;
+        document.getElementById('tabBtnRoaster').className = tab === 'roaster' ? 'nav-tab active' : 'nav-tab';
+        document.getElementById('tabBtnBoq').className = tab === 'boq' ? 'nav-tab active' : 'nav-tab';
+        document.getElementById('tabBtnTracker').className = tab === 'tracker' ? 'nav-tab active' : 'nav-tab';
+
+        if (tab === 'roaster') {
+            document.getElementById('sectionRoaster').classList.remove('hidden');
+            document.getElementById('sectionPasteTools').classList.add('hidden');
+        } else {
+            document.getElementById('sectionRoaster').classList.add('hidden');
+            document.getElementById('sectionPasteTools').classList.remove('hidden');
+            
+            // Reset input Paste Text
+            document.getElementById('rawData').value = '';
+            document.getElementById('siteSelect').innerHTML = '<option value="">-- Pilih Site ID --</option>';
+            document.getElementById('viewBoq').classList.add('hidden');
+            document.getElementById('viewTracker').classList.add('hidden');
         }
-    </script>
+    }
+
+    // TAB 1: Cari Site dari Duty Roaster Excel
+    function cariSite() {
+        if (!workbook) return alert("Tunggu sebentar, data Excel Duty Roaster masih dimuat.");
+        
+        const keyword = document.getElementById("inputSite").value.toLowerCase().trim();
+        if (!keyword) return alert("Masukkan Site ID terlebih dahulu!");
+
+        let hasilTeks = "";
+        let ketemu = false;
+
+        const sheetName = "SITE LIST ID"; 
+        if (workbook.SheetNames.includes(sheetName)) {
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
+
+            jsonData.forEach(row => {
+                const rowString = JSON.stringify(row).toLowerCase();
+                if (rowString.includes(keyword)) {
+                    ketemu = true;
+                    const oldSiteName = row[" OLD SITE NAME SIMPLIFY"] || row["OLD SITE NAME SIMPLIFY"] || "-";
+                    
+                    hasilTeks += `Berdasarkan sheet SITE LIST ID, berikut rinciannya:\n\n`;
+                    hasilTeks += `New Site ID IOH: ${row["New Site ID IOH"] || "-"}\n`;
+                    hasilTeks += `Old Site ID: ${row["OLD SITE ID"] || "-"}\n`;
+                    hasilTeks += `New Site Name: ${row["NEW SITE NAME"] || "-"}\n`;
+                    hasilTeks += `Old Site Name: ${oldSiteName}\n`;
+                    hasilTeks += `Status Site: ${row["STATUS SITE"] || "-"} (${row["Status on CAV"] || "-"})\n`;
+                    hasilTeks += `Sales Area (SA): ${row["New SA (Sales Area)"] || "-"}\n`;
+                    hasilTeks += `Region: ${row["New Region"] || "-"} (${row["Area EEJ or WEJ"] || "-"})\n`;
+                    hasilTeks += `Micro Cluster: ${row["New Micro Cluster"] || "-"}\n`;
+                    hasilTeks += `Koordinat: Lat ${row["LATITUDE"] || "-"}, Long ${row["LONGITUDE"] || "-"}\n`;
+                    hasilTeks += `Cluster CM / FM Office: ${row["FM Office"] || "-"}\n`;
+                    hasilTeks += `FME1 / CM: ${row["FME Synergy CM"] || "-"} (Kontak: ${row["1st NUMBER FME1 / CM"] || "-"})\n`;
+                    hasilTeks += `Subkontraktor: ${row["SUBCONT"] || "-"}\n`;
+                    hasilTeks += `RTS Adyawinsa: ${row["Name RTS Adyawinsa"] || "-"} (Kontak: ${row["CONTACT RTS Adyawinsa"] || "-"})\n`;
+                    hasilTeks += `=========================================\n\n`;
+                }
+            });
+        }
+
+        document.getElementById("hasil").innerText = ketemu ? hasilTeks.trim() : `Site ID "${keyword}" tidak ditemukan dalam data.`;
+    }
+
+    // TAB 2 & 3: Process Paste Data
+    function processPasteData() {
+        const text = document.getElementById('rawData').value.trim();
+        if (!text) { alert('Silakan masukkan data dari Excel terlebih dahulu!'); return; }
+
+        const lines = text.split('\n');
+        parsedSites = {};
+        const select = document.getElementById('siteSelect');
+        select.innerHTML = '<option value="">-- Pilih Site ID --</option>';
+
+        lines.forEach((line, idx) => {
+            const cols = line.split('\t');
+            if (cols.length > 1) {
+                let siteId = currentTab === 'boq' 
+                    ? (cols[1] ? cols[1].trim() : '') 
+                    : (cols[6] ? cols[6].trim() : (cols[1] ? cols[1].trim() : `INDEX_${idx}`));
+
+                if (siteId) {
+                    parsedSites[siteId] = cols;
+                    const opt = document.createElement('option');
+                    opt.value = siteId;
+                    let displayName = currentTab === 'boq' ? (cols[3] || '') : (cols[7] || cols[1] || '');
+                    opt.textContent = `${siteId} ${displayName ? '- ' + displayName : ''}`;
+                    select.appendChild(opt);
+                }
+            }
+        });
+
+        if (Object.keys(parsedSites).length > 0) {
+            select.selectedIndex = 1;
+            displaySummary();
+        } else {
+            alert('Gagal mendeteksi Site ID. Pastikan data berasal dari copy-paste baris Excel!');
+        }
+    }
+
+    function renderRow(label, val) {
+        return `<div class="data-row"><span class="data-label">${label}</span><span class="data-value">${val || '-'}</span></div>`;
+    }
+
+    // Display Summary Result
+    function displaySummary() {
+        const siteId = document.getElementById('siteSelect').value;
+        const vBoq = document.getElementById('viewBoq');
+        const vTracker = document.getElementById('viewTracker');
+
+        if (!siteId || !parsedSites[siteId]) {
+            vBoq.classList.add('hidden');
+            vTracker.classList.add('hidden');
+            return;
+        }
+
+        const cols = parsedSites[siteId];
+
+        if (currentTab === 'boq') {
+            vTracker.classList.add('hidden');
+            
+            document.getElementById('boqSec1').innerHTML = 
+                renderRow('Site ID / NE ID', `<span class="badge">${cols[1]}</span> / ${cols[2] || '-'}`) +
+                renderRow('Site Name / Old ID', `${cols[3] || '-'} (${cols[4] || '-'})`) +
+                renderRow('Operator / Vendor', `${cols[5] || '-'} / ${cols[32] || '-'}`) +
+                renderRow('Cluster / Region', `${cols[6] || '-'} / ${cols[9] || '-'}`) +
+                renderRow('Koordinat', `${cols[11] || '-'}, ${cols[12] || '-'}`);
+
+            document.getElementById('boqSec2').innerHTML = 
+                renderRow('SOW Utama', cols[13] || '-') +
+                renderRow('Detail SOW (N2600/700)', cols[123] || '-') +
+                renderRow('Remark SOW', cols[368] || '-') +
+                renderRow('Config Plan', cols[345] || '-');
+
+            document.getElementById('boqSec3').innerHTML = 
+                renderRow('Config Existing', cols[55] || '-') +
+                renderRow('Config Final', cols[84] || '-') +
+                renderRow('SM Existing -> Final', `${cols[43] || '-'} ➡️ <b>${cols[138] || '-'}</b>`) +
+                renderRow('RF Existing -> Final', `${cols[42] || '-'} ➡️ <b>${cols[137] || '-'}</b>`);
+
+            document.getElementById('boqSec4').innerHTML = 
+                renderRow('Existing Power', `${cols[144] || '-'} kW`) +
+                renderRow('Final Power', `<b>${cols[147] || '-'} kW</b>`) +
+                renderRow('Delta Power', `<span class="badge">+${cols[148] || '-'} kW</span>`);
+
+            document.getElementById('boqSec5').innerHTML = 
+                renderRow('ABIP Capacity Card', `${cols[164] || '0'} unit`) +
+                renderRow('AVHA MAA 64T64R', `${cols[184] || '0'} unit`) +
+                renderRow('SFP 10G / 25G', `${cols[186] || '0'} / ${cols[187] || '0'} unit`) +
+                renderRow('Kabel Fiber 80m / 10m', `${cols[190] || '0'} / ${cols[188] || '0'} unit`) +
+                renderRow('Bracket AMPI', `${cols[201] || '0'} unit`);
+
+            vBoq.classList.remove('hidden');
+
+        } else if (currentTab === 'tracker') {
+            vBoq.classList.add('hidden');
+
+            document.getElementById('trSec1').innerHTML = 
+                renderRow('Batch / System Key', `${cols[0] || '-'} / <span class="badge">${cols[1] || '-'}</span>`) +
+                renderRow('New Site ID / Name', `<b>${cols[6] || '-'}</b> - ${cols[7] || '-'}`) +
+                renderRow('Kota / Kec / Prov', `${cols[25] || '-'}, ${cols[33] || '-'}, ${cols[29] || '-'}`) +
+                renderRow('Cluster / Region', `${cols[26] || '-'} / ${cols[31] || '-'}`) +
+                renderRow('Site Type / Tag', `${cols[36] || '-'} | ${cols[37] || '-'}`);
+
+            document.getElementById('trSec2').innerHTML = 
+                renderRow('TLP Name', cols[8] || '-') +
+                renderRow('Partner TSS / Change', `${cols[9] || '-'} / ${cols[10] || '-'}`) +
+                renderRow('Partner TI / Change', `${cols[11] || '-'} / ${cols[12] || '-'}`) +
+                renderRow('Partner NR700', cols[13] || '-');
+
+            document.getElementById('trSec3').innerHTML = 
+                renderRow('WBS Status', `<span class="badge badge-green">${cols[3] || '-'}</span>`) +
+                renderRow('SPO TSS (2.6G / 700M)', `${cols[17] || '-'} / ${cols[18] || '-'}`) +
+                renderRow('SPO TI (2.6G / 700M)', `${cols[22] || '-'} / ${cols[23] || '-'}`) +
+                renderRow('POR TSS / TI', `${cols[16] || '-'} / ${cols[21] || '-'}`);
+
+            document.getElementById('trSec4').innerHTML = 
+                renderRow('Status Progress', `<span class="badge badge-orange">${cols[57] || '-'}</span>`) +
+                renderRow('TSS Complete / TSSR', `${cols[48] || '-'} / ${cols[51] || '-'}`) +
+                renderRow('RFI / E2E RFI', `${cols[52] || '-'} / ${cols[60] || '-'}`) +
+                renderRow('Install 2.6G / 700M', `${cols[54] || '-'} / ${cols[62] || '-'}`) +
+                renderRow('Integration 2.6G / 700M', `${cols[55] || '-'} / ${cols[64] || '-'}`) +
+                renderRow('ATP / HOTNEWS Status', `${cols[76] || '-'} / ${cols[75] || '-'}`);
+
+            document.getElementById('trSec5').innerHTML = 
+                renderRow('Status CAF (RAN Nokia)', cols[82] || '-') +
+                renderRow('CAF Approved TLP', cols[84] || '-') +
+                renderRow('PLN Status / Upgrade', `${cols[96] || '-'} (${cols[97] || '-'})`) +
+                renderRow('PS Scope / Final', `${cols[99] || '-'} / ${cols[98] || '-'}`);
+
+            document.getElementById('trSec6').innerHTML = 
+                renderRow('SM Existing ➡️ Final', `${cols[78] || '-'} ➡️ <b>${cols[79] || '-'}</b>`) +
+                renderRow('RF Existing ➡️ Final', `${cols[80] || '-'} ➡️ <b>${cols[81] || '-'}</b>`) +
+                renderRow('RRU (AKHD / AVHA / AHPDC)', `${cols[89] || '0'} / ${cols[92] || '0'} / ${cols[95] || '0'}`) +
+                renderRow('Module (ARDC / AREC / ARGB)', `${cols[85] || '0'} / ${cols[86] || '0'} / ${cols[87] || '0'}`);
+
+            vTracker.classList.remove('hidden');
+        }
+    }
+</script>
 
 </body>
 </html>
