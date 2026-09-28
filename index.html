@@ -3,93 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard & Site Technical Tools IOH</title>
-    <!-- Library SheetJS untuk membaca file Duty Roaster Excel -->
+    <title>Telecom Site Technical Tools - Full Master</title>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; padding-bottom: 30px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; padding-bottom: 40px; }
         
         header { 
             background: linear-gradient(135deg, #1f4e78, #0d2c4a); 
-            color: white; 
-            padding: 15px; 
-            text-align: center; 
+            color: white; padding: 18px; text-align: center; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
         }
-        header h1 { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
-        header p { font-size: 0.8rem; opacity: 0.85; }
+        header h1 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+        header p { font-size: 0.85rem; opacity: 0.85; }
 
-        .container { padding: 15px; max-width: 900px; margin: 0 auto; }
-        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
-        .card-title { font-size: 0.95rem; font-weight: 700; color: #1f4e78; margin-bottom: 12px; border-bottom: 2px solid #eef2f5; padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .container { padding: 15px; max-width: 1000px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .card-title { font-size: 0.95rem; font-weight: 700; color: #1f4e78; margin-bottom: 12px; border-bottom: 2px solid #eef2f5; padding-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
         
-        /* Navigation Tabs */
         .nav-tabs { display: flex; gap: 6px; margin-bottom: 15px; background: #eef2f5; padding: 5px; border-radius: 10px; overflow-x: auto; }
-        .nav-tab { flex: 1; min-width: 120px; padding: 10px; border: none; background: transparent; color: #555; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; text-align: center; white-space: nowrap; transition: 0.2s; }
+        .nav-tab { flex: 1; min-width: 130px; padding: 10px; border: none; background: transparent; color: #555; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; text-align: center; white-space: nowrap; transition: 0.2s; }
         .nav-tab.active { background: #1f4e78; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
         label { font-size: 0.85rem; font-weight: 600; color: #555; display: block; margin-bottom: 6px; }
         textarea, input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 0.9rem; margin-bottom: 10px; }
-        textarea { height: 110px; font-family: monospace; font-size: 0.78rem; }
+        textarea { height: 100px; font-family: monospace; font-size: 0.78rem; }
         
-        button.btn-action { width: 100%; background-color: #1f4e78; color: white; border: none; padding: 11px; border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button.btn-action { width: 100%; background-color: #1f4e78; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 0.92rem; font-weight: 600; cursor: pointer; }
         button.btn-action:active { background-color: #153452; }
 
-        .data-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
-        .data-row:last-child { border-bottom: none; }
-        .data-label { color: #666; font-weight: 500; flex: 1; padding-right: 10px; }
-        .data-value { color: #111; font-weight: 600; flex: 1.2; text-align: right; word-break: break-word; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+        .data-item { background: #f8fafc; padding: 8px 12px; border-radius: 6px; border: 1px solid #edf2f7; font-size: 0.82rem; }
+        .data-label { color: #64748b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; display: block; margin-bottom: 2px; }
+        .data-value { color: #0f172a; font-weight: 600; word-break: break-word; }
         
-        .badge { display: inline-block; padding: 2px 7px; background: #e3f2fd; color: #1f4e78; border-radius: 4px; font-weight: bold; font-size: 0.78rem; }
-        .badge-green { background: #e8f5e9; color: #2e7d32; }
-        .badge-orange { background: #fff3e0; color: #e65100; }
-        
+        /* Style untuk Highlight Rangkuman Item Terisi */
+        .summary-card { background: #eef6ff; border: 1px solid #b6d4fe; border-radius: 12px; padding: 16px; margin-bottom: 15px; }
+        .summary-card .card-title { color: #084298; border-bottom-color: #cfe2ff; }
+        .summary-item { background: #ffffff; border-left: 4px solid #0d6efd; }
+        .summary-item .data-value { color: #0d6efd; font-size: 0.9rem; }
+
+        .badge { display: inline-block; padding: 2px 6px; background: #e3f2fd; color: #1f4e78; border-radius: 4px; font-weight: bold; font-size: 0.78rem; }
+        .badge-success { background: #d1e7dd; color: #0f5132; }
         #status { font-weight: bold; font-size: 0.85rem; margin-bottom: 10px; padding: 8px; border-radius: 6px; background: #f0f4f8; }
-        pre { background: #f8f9fa; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 0.82rem; line-height: 1.5; border: 1px solid #e2e8f0; white-space: pre-wrap; font-family: inherit; }
+        pre { background: #f8f9fa; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 0.82rem; line-height: 1.5; border: 1px solid #e2e8f0; white-space: pre-wrap; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>📱 Telecom Site & Technical Tools</h1>
+    <h1>📱 Telecom Site Technical Tools</h1>
     <p>Integrated Toolset IOH (Duty Roaster, BOQ Technical & Project Tracker)</p>
 </header>
 
 <div class="container">
     
-    <!-- Tab Navigation Header -->
     <div class="nav-tabs">
         <button id="tabBtnRoaster" class="nav-tab active" onclick="switchMainTab('roaster')">🔍 Duty Roaster</button>
         <button id="tabBtnBoq" class="nav-tab" onclick="switchMainTab('boq')">⚙️ BOQ Technical Master</button>
         <button id="tabBtnTracker" class="nav-tab" onclick="switchMainTab('tracker')">📊 Project Tracker</button>
     </div>
 
-    <!-- ==================== TAB 1: DUTY ROASTER EXCEL ==================== -->
+    <!-- TAB 1: DUTY ROASTER -->
     <div id="sectionRoaster">
         <div class="card">
             <div class="card-title">🔍 Pencarian Site ID (Duty Roaster Excel)</div>
             <div id="status">⏳ Loading file Excel, tunggu sebentar...</div>
-            
             <label for="inputSite">Masukkan Site ID IOH / Old Site ID:</label>
-            <input type="text" id="inputSite" placeholder="Contoh: 16GSK0128..." onkeyup="if(event.key==='Enter') cariSite()">
+            <input type="text" id="inputSite" placeholder="Contoh: 16SBY0333 / 16GSK0128..." onkeyup="if(event.key==='Enter') cariSite()">
             <button class="btn-action" onclick="cariSite()">🔍 Cari Data Site</button>
         </div>
-
         <div class="card">
             <div class="card-title">📄 Rincian Informasi Site</div>
             <pre id="hasil">Hasil pencarian akan muncul di sini...</pre>
         </div>
     </div>
 
-    <!-- ==================== TAB 2 & 3 CONTAINER (BOQ & TRACKER) ==================== -->
+    <!-- TAB 2 & 3: BOQ & TRACKER -->
     <div id="sectionPasteTools" class="hidden">
         <div class="card">
-            <div class="card-title">1. Paste Raw Data Excel</div>
-            <label for="rawData">Tempel Data Excel di sini (Bisa 1 baris data langsung / dengan header):</label>
-            <textarea id="rawData" placeholder="Paste data Excel dari clipboard di sini..."></textarea>
-            <button class="btn-action" onclick="processPasteData()">⚡ Analisis Data Site</button>
+            <div class="card-title">1. Tempel Raw Data Excel</div>
+            <label for="rawData">Paste Data Excel di sini (1 baris data langsung / dengan header):</label>
+            <textarea id="rawData" placeholder="Tempel baris data Excel di sini..."></textarea>
+            <button class="btn-action" onclick="processPasteData()">⚡ Analisis Data Site (Lengkap)</button>
         </div>
 
         <div class="card">
@@ -99,59 +96,23 @@
             </select>
         </div>
 
-        <!-- RESULT VIEW: BOQ TECHNICAL MASTER -->
-        <div id="viewBoq" class="hidden">
-            <div class="card">
-                <div class="card-title">📌 Site Identity & Location</div>
-                <div id="boqSec1"></div>
+        <div id="viewResult" class="hidden">
+            <!-- FITUR BARU: Rangkuman Item / Hardware Terisi -->
+            <div class="summary-card">
+                <div class="card-title">
+                    <span>📌 Rangkuman Item & Hardware Terisi (Non-Zero)</span>
+                    <span id="activeCountBadge" class="badge badge-success">0 Item Terisi</span>
+                </div>
+                <div id="summaryGrid" class="grid-container"></div>
             </div>
-            <div class="card">
-                <div class="card-title">⚙️ Scope of Work & Program Status</div>
-                <div id="boqSec2"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">📡 Configuration & System Module (SM / RF)</div>
-                <div id="boqSec3"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">📶 Antenna & Feeder System</div>
-                <div id="boqSec4"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">⚡ Power Consumption (Daya Listrik)</div>
-                <div id="boqSec5"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">📦 Key Hardware Material (Nokia / IPAA / RRH)</div>
-                <div id="boqSec6"></div>
-            </div>
-        </div>
 
-        <!-- RESULT VIEW: PROJECT TRACKER -->
-        <div id="viewTracker" class="hidden">
+            <!-- Tampilan Lengkap Utama (Tetap Unchanged) -->
             <div class="card">
-                <div class="card-title">📍 Identitas & Lokasi Project</div>
-                <div id="trSec1"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">👥 Partner & Vendor Responsibility</div>
-                <div id="trSec2"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">📄 LOI, SPO & Document Tracking Status</div>
-                <div id="trSec3"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">🏗️ Field Progress & Integration Milestone</div>
-                <div id="trSec4"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">⚡ Power System (PLN) & CAF Status</div>
-                <div id="trSec5"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">📦 Material Hardware Deployment (2.6G / 700M / IPAA)</div>
-                <div id="trSec6"></div>
+                <div class="card-title">
+                    <span id="resultTitle">📋 Detail Informasi Lengkap Site</span>
+                    <span id="totalColBadge" class="badge">0 Kolom Terbaca</span>
+                </div>
+                <div id="dynamicGrid" class="grid-container"></div>
             </div>
         </div>
     </div>
@@ -164,7 +125,15 @@
     let parsedSitesObj = {}; 
     const excelFile = "DUTY ROASTER MS IOH _0826.xlsx"; 
 
-    // Auto Load File Excel Duty Roaster
+    // Header Master untuk Fallback jika user hanya paste 1 baris tanpa Header
+    const HEADERS_BOQ = [
+        "NO","Site ID","NE ID","SITE NAME","OLD SITE ID","OPERATOR","MC CLUSTER","NANO CLUSTER 5G (3826)","Area","REGION","LAYER","LONG","LAT","SOW","Remarks1","Last Program","On Air","Simplify Tag","Simplify RAN Feedback Priority_Update","733 Sites NR700","Shooter","Remarks 700","Different with Scenario1","Check AKHD Update","Config Existing","Check Config Existing","Remarks Module/Additional Information (Alumunium/E/P-GSM)","ANTENNA EXISTING","ANTENNA TYPE","# Existing Antenna","# New Antenna","Check IBC2M","Existing Vendor","4G Vendor","3G Vendor","2G Vendor","Remarks Vendor","Check Existing RF 1800","Check Existing RF 2100","Existing 2G","Existing 3G","Existing LTE","Existing RFM","Existing SM","Existing Antenna.Height","Existing 900Mhz.Feeder.System","Existing 1800Mhz.Feeder.System","Existing 2100Mhz.Feeder.System","Existing 2600Mhz.Feeder.System","Existing 700Mhz.Feeder.System","NE 2G","NE 3G","NE 4G","NE 5G","Current Physical Sector","Current Config","Current 4G BW & Config","CurrentSector.LTE","Current.900.Ant.Type","Current.1800.Ant.Type","Current.2100.Ant.Type1","Current.2100.Ant.Type2 (5G if No LTE)","Current.2600.Ant.Type","Current.700.Ant.Type","Current.DualHighBand_RFM","Current.5G.900.Ant.Type","Current.5G.1800.Ant.Type","Current.5G.2100.Ant.Type","Current.5G.2600.Ant.Type","Current.5G.700.Ant.Type","Current.Ant.Installed","Current.G900","Current.G1800","Current.U900","Current.U2100","Current.L900.Config","Current.L1800.Config","Current.L2100.Config","Current.NR900.Config","Current.NR1800.Config","Current.NR2100.Config","Current.NR2600.Config","Current.NR700.Config","Final Physical Sector","Config Final (Implementation)","Final 4G BW & Config","FinalSector.LTE","Final.900.Ant.Type","Final.1800.Ant.Type","Final.2100.Ant.Type1","Final.2100.Ant.Type2 (5G if No LTE)","Final.2600.Ant.Type","Final.700.Ant.Type","Final.DualHighBand_RFM","Final.5G.900.Ant.Type","Final.5G.1800.Ant.Type","Final.5G.2100.Ant.Type","Final.5G.2600.Ant.Type","Final.5G.700.Ant.Type","Final.Ant.Installed","Final.G900","Final.G1800","Final.U900","Final.U2100","Final.L900.Config","Final.L1800.Config","Final.L2100.Config","Final.NR900.Config","Final.NR1800.Config","Final.NR2100.Config","Final.NR2600.Config","Final.NR700.Config","Program","Scope of Work G900 / U900 / L900 / G1800 / L1800 / U2100 / L2100 / N1800 /N2100/N2600/N700","G900","U900","L900","G1800","L1800","U2100","L2100","N1800","N2100","N2600","N700","Final.Estimated.Antenna","SingleBeam.MultiBand.10-Ports","SingleBeam.LowBand.2-Ports_DualBeam.DualHighBand.8-Ports","SingleBeam.LowBand.2-Ports_DualBeam.DualHighBand.16-Ports","SingleBeam.LowBand.2-Ports_TripleBeam.DualHighBand.12-Ports","PentaBeam.Highband.10-Ports","SingleBeam.LowBand.4-Ports_SingleBeam.DualHighBand.8-Ports","SingleBeam.LowBand.4-Ports_DualBeam.DualHighBand.8-Ports","SingleBeam.LowBand.4-Ports_TripleBeam.DualHighBand.12-Ports","Mini.4HB-4LB","IPAA","Vendor Existing","Final RFM","Final SM","SM Type","Final HW","Config HW & Band","Existing SM Power Cons","Existing RF Power Cons","ExistingTotal Power Con","Final SM Power Cons","Final RF Power Cons","FinalTotal Power Con","Delta Power Cons","Existing SM Power Cons 2","Existing RF Power Cons 2","ExistingTotal Power Con 2","Final SM Power Cons 2","Final RF Power Cons 2","FinalTotal Power Con 2","Delta Power Cons 2","EMHA FLEXI EDGE MECHANICAL 3U UNIT","FMHA FLEXI SIDE COVER 3U","FPKA Flexi Pole Kit","AMIA AirScale Subrack","ASIM AirScale Control","ASIB AirScale Common","ABIA AirScale Capacity","ABIO AirScale Capacity","ABIP AirScale Capacity","ABIP Baseband Capacity Activation LTU - IOH1xLTU","AMPA Pole Mounting Kit (30mm to 120mm)","APPC AirScale2 55A DC plug 10-16 mm2","AMBE AirScale bookmount kit 101-125","APPG AirScale2 70A DC plug 10-16 mm2","ARDB AirScale RFM 6T6R B8 480W","ARDC AirScale RFM 6T6R n8 480W","AREA AirScale RFM 6T6R B3 480W","AREC AirScale RFM 6T6R n3 480W","ARGA AirScale RFM 6T6R B1 480W","ARGB AirScale RFM 6T6R n1 480W","AHDA AirScale RRH 2T4R B8/n8  120 W","AHEGC AirScale Dual RRH 4T4R B1/3 400W","AHPDC AirScale Dual RRH 4T4R n8/n28 480W","AHEGG Dual AirScale RRH 4T4R B1/B3 480W","AHEGH AirScale Dual RRH 4T4R B1/3 480W","AKHD AirScale RRH 8T8R n41 400W","AHEJ AirScale Micro RRH 4T4R B3 20W","AHGB AirScale Micro RRH 4T4R B1 20W","AVHA AirScale MAA 64T64R 192AE n41 400W","AWHHJ AirScale Micro RRH 4T4R n41 (2496-2690Mhz) 160W","AOSI 10Gbs SFP+ 1310nm 1.4km SM I-temp","AOSC SFP28 2Km SM I-temp RS","FUFBG SM OD fiber LC OD-LC OD dual 10m","FUFBF SM OD Fiber LCOD-LCOD 50m","FUTEY SM OD Fiber LCOD-LCOD 80m","FUFBH SM OD Fiber LCOD-LCOD 100m","SBTS Incremental 20W Power LTU","20W add tot. output power for mMIMO CLTU","AMJE Cable entry cover for ACOC","FTSH GPS cable assembly 100m","AYGE GNSS Dual Band Receiver w/ Antenna","FTSM MR10 GPS Cable 300 m","FYMA GPS MOUNTING KIT","FTSE GPS cable assembly 30m","ASAL EAC cable 19PIN - peeled end 10m","AMPI MAA bracket 30 tilt +90 azimuth","GSM RAN SW All You Can Eat / All Inclusive per TRX (incl.OSS)","LTE RAN SW All You Can Eat / All Inclusive per sector/5 MHz  (incl.OSS)","LTE RAN SW All You Can Eat / All Inclusive per sector/10 MHz  (incl.OSS)","LTE RAN SW All You Can Eat / All Inclusive per sector/15 MHz  (incl.OSS)","LTE RAN SW All You Can Eat / All Inclusive per sector/20MHz  (incl.OSS)","LTE RAN SW All You Can Eat / All Inclusive per sector/30MHz  (incl.OSS)","LTE RAN SW All You Can Eat / All Inclusive per sector/35MHz  (incl.OSS)","LTE RAN SW All You Can Eat / All Inclusive per sector/40MHz  (incl.OSS)","LTE RAN SW All You Can Eat / All Inclusive per sector/55 MHz  (incl.OSS)","5G RAN SW All You Can Eat / All Inclusive per sector/10MHz  (incl.OSS)","5G RAN SW All You Can Eat / All Inclusive per sector/15MHz  (incl.OSS)","5G RAN SW All You Can Eat / All Inclusive per sector/50MHz  (incl. OSS)","Triple Band","Penta Band Large - Prose","Penta Band Full High Split Large (HOS 10 Ports)  - Prose","Nona Band - Full High Split 4x(4x4) Large (HOS 18 Ports) - Prose","TRIPLEBEAM ANTENNA","PENTABEAM.10-Ports","BA-G7G7W8W8W8W8X65V-11","HOS 12 Port Prose 4 Port LB - 2.6m","TB 16 Port Prose 4 Port LB - 2.6m","Pentaband 12 Port Prose 4 Port LB - 2.6 M","Mini.4HB-4LB","IPAA 2","Rosenberger 895-952.5 MHz Filter, Double","Jumper 3M 43M43M, 2xWPS (Filter)","AISG 9m","Coaxial Load 80W, 790-2690 MHz, 7-16 female, Low IM","Hybrid Combiner 4:4, 790-2690 MHz, 7-16 female, 150W","AntennaMountingSTD(IncludeBoom)","AntennaMountingBracket Type 1C - Ph 2","Basic RF Module","Basic System Module","RF cable management","Power DC cable NYY 2*16 sqmm","Grounding cable NYAF 16mm2 Yellow/Green","Label G900","Label U900","Label L900","Label G1800","Label L1800","Label U2100","Label L2100","Label NR 2100","Label NR 2600","Label L700 / NR700","RS SHRINKINGSLEEVE 24/8MM BLACK 1200MM","JUMPER CABLE/Rosenberger 1/2 jumper cab (Jumper 5 m)","Rosenberger 1/2\" jumper cable, 4.3-10(m)-4.3-10(m), 7 m","Jumper 7M 43MDR, 1xWPS","Jumper 3M 43M43M, 2xWPS","Mat 2x16 power cable and clamp for RRH","Mat 2x25 power cable and clamp for RFM","MCB 63A","DC Terminal Seal Assy","Cable clamp OX M for FO(2) + DC(2)","Mat 2x25 ALU power cable and clamp for RFM","REC-CAB-Mst-05.HEX","REC-PWC-MR-03","REC-Mdl-MR-3000","AC Power Cable, NYFGBY 4x10 mm2 (AC power cable use clour base on SNI/PUIL)","Stainless Steel Conduit 1\" for AC Power Cable","Accessories: Cable lugs, heat shrink, Dynabolt, Cable ties, label, etc","LM-CBL-WEP-16","Single Site Verification of 1 Technology BTS","Antennas Swap (Antennas, Brackets & Jumpers) for Disposal without PIM testing 2 Sectors Site","Antennas Swap (Antennas, Brackets & Jumpers)  for Disposal without PIM testing 3 Sectors Site","BBU/RRU/Filter/Module Dismantle for Redeployment","3rd Party Project Management","New Site or New Technology on Existing Site - With Antenna/AAU Installation - with 1 Technology - with No Power Requirements","New Site or New Technology on Existing Site - With Antenna/AAU Installation - with 1 Technology - with New Power System","New Site or New Technology on Existing Site - With Antenna/AAU Installation - with 1 Technology - with Power System Expansion","New Site or New Technology on Existing Site - With Antenna/AAU Installation - with 2 Technologies - with No Power Requirements","New Site or New Technology on Existing Site - With Antenna/AAU Installation - with 2 Technologies - with Power System Expansion","Expansion on Existing Site and Existing Technology With Hardware Change - Without Antenna/AAU Installation - with No Power Requirements","Dismantle Site","Dismantle SM","Dismantle Huawei SM","Dismantle FSMF","Dismantle FBBx","Dismantle ASIA","Dismantle ASIB","Dismantle ABIA","Dismantle ABIL","Dismantle RF","Dismantle Huawei RF","Dismantle FXDA","Dismantle FXDB","Dismantle FXDD","Dismantle FXED","Dismantle FRGP","Dismantle FRGU","Dismantle ARDA","Dismantle ARDB","Dismantle ARDC","Dismantle AREA","Dismantle AREC","Dismantle ARGA","Dismantle ARGB","Dismantle AHEGH","Dismantle AHEGG","Dismantle AHEGC","Dismantle Antenna","SingleBeam.MultiBand.6-Ports","SingleBeam.MultiBand.10-Ports 2","SingleBeam.LowBand.2-Ports_DualBeam.DualHighBand.8-Ports 2","SingleBeam.LowBand.2-Ports_DualBeam.DualHighBand.16-Ports 2","SingleBeam.LowBand.2-Ports_TripleBeam.DualHighBand.12-Ports 2","SingleBeam.HighBand.2-Ports","SingleBeam.HighBand.4-Ports","Unknown","SingleBeam.LowBand.4-Ports_SingleBeam.DualHighBand.4-Ports","DualBeam.DualHighBand.4-Ports","SingleBeam.MultiBand.2-Ports","x","#Site.Eqp.Redeploy","ABIA AirScale Capacity 2","AREA AirScale RFM 6T6R B3 480W 2","ARGA AirScale RFM 6T6R B1 480W 2","Penta Band Large - Prose 2","Penta Band Full High Split Large (HOS 10 Ports)  - Prose 2","JUMPER CABLE/Rosenberger 1/2 jumper cab (Jumper 5 m) 2","Rosenberger 1/2\" jumper cable, 4.3-10(m)-4.3-10(m), 7 m 2","FPKA Flexi Pole Kit 2","FMFA FLEXI MOUNTING KIT FLOOR/WALL/POLE","FTSH GPS cable assembly 100m 2","AYGE GNSS Dual Band Receiver w/ Antenna 2","FYMA GPS MOUNTING KIT 2","Coaxial Load 80W, 790-2690 MHz, 7-16 female, Low IM 2","Hybrid Combiner 4:4, 790-2690 MHz, 7-16 female, 150W 2","AntennaMountingSTD(IncludeBoom) 2","Basic RF Module 2","RF cable management 2","Grounding cable NYAF 16mm2 Yellow/Green 2","Label L1800 2","Label L2100 2","Jumper 7M 43MDR, 1xWPS 2","Jumper 3M 43M43M, 2xWPS 2","Mat 2x16 power cable and clamp for RRH 2","Mat 2x25 power cable and clamp for RFM 2","MCB 63A 2","DC Terminal Seal Assy 2","Cable clamp OX M for FO(2) + DC(2) 2","Config Plan","Baseband Cell Set","RF Cell Set 1 (GL900)","RF Cell Set 2 (L1800)","RF Cell Set 3 (L2100)","L1800+L2100","U2100+L2100","U2100 2","REMARK SRAN","Remark SRAN, SRAT, SRAN + SRAT","Remark","Target Lebaran","Update Target Lebaran","Remark 4T4R","Remark CA","HOS SECTOR","Approved Azimuth","Remark Azimuth","Target Lebaran 2","Update Target Lebaran 2","Noted","CR","Program Before","Remark SOW","On Site or Remote","SSV","Remark SSV","Vlan tagging","scope_category","Category NDPD","Simple Program","SOW PS","Material Source","SOW SIMPLE","ASIM AirScale Control 2","ABIP AirScale Capacity 2","FTSH GPS cable assembly 100m 3","AYGE GNSS Dual Band Receiver w/ Antenna 3","FYMA GPS MOUNTING KIT 3","FTSE GPS cable assembly 30m 2","Pentaband 12 Port Prose 4 Port LB - 2.6 M 2","AISG 9m 2","AOSI 10Gbs SFP+ 1310nm 1.4km SM I-temp 2","FUFBF SM OD Fiber LCOD-LCOD 50m 2","FUTEY SM OD Fiber LCOD-LCOD 80m 2","Mat 2x16 power cable and clamp for RRH 3","Cable clamp OX M for FO(2) + DC(2) 3","AOSI 10Gbs SFP+ 1310nm 1.4km SM I-temp 3","FUFBF SM OD Fiber LCOD-LCOD 50m 3","FUTEY SM OD Fiber LCOD-LCOD 80m 3","FUFBH SM OD Fiber LCOD-LCOD 100m 2"
+    ];
+
+    const HEADERS_TRACKER = [
+        "Batch","System Key","System Key 700","wbs_status","SMPID 2600","SMPID 700","New Site ID","New Site Name","TLP  Name","Partner TSS","Change Partner TSS","Partner TI","Change Partner TI","Partner NR700","LOI TSS 2600","LOI TSS 700","POR TSS","SPO TSS NR2600","SPO TSS NR 700","LOI TI 2600","LOI TI 700","POR TI 2600","SPO TI NR 2600","SPO TI NR 700","LOI PS","Kota / Kabupaten","NC_5G2600","Sequence_5G2600","SPO TI date","Province","Circle","Region","Agglomeration","Kecamatan","Longitude","Laitude","Site Type","Simplify Tag","Simplify RAN Feedback Priority_Update","Config Type","Config Descp","Remark SOW","SERVICE WORKS","Material Flag","RFS Plan Activation","Week RFS Plan  Activation","CITY PRIORITY","TSS  Complete","Review By SCM","Review By PE","TSSR done","RFI","MOS 2.6 GHz","Install 2.6 GHz","Install Done 2.6 GHz","Integration 2.6 GHz","Week Integration 2.6 GHz","STATUS PROGESS","Remark","Simply Issue","E2E RFI","MOS  700 Hz","Install  700 Hz","Install Done 700 Hz","Integration 700 Hz","Week Integration 700 Hz","SHM Review SA","SA Review by Nokia","Plan Date MOS","Week Plan MOS","Plan Date Install done","Week Plan Instal Done","Plan Integration","Week plan Integration","Plan Integartion","Priority 700","LTR NR700","Plan Week","RFC","HOTNEWS","ATP","DISMANTLE","SM Existing","SM Final","RF Existing","RF Final","ANTENNA TYPE EXISTING","FINAL ANTENNA","Status CAF (RAN NOKIA)","CAF Submit to TLP","CAF Approved TLP","DETAIL ISSUE","ARDC","AREC","ARGB","AHEGH","AKHD","AHEJ","AHGB","AVHA","AWHHJ","AAFA","AMMN Airscale IPAA AVHA Slide-in Frame C","PFAL 2.7m 2WL4H for IPAA","PFAx L DT/UT kit 76-140mm","Pentaband 4LO_8HI","IPAA","AHPDC","HOS 4LO_8HI","Pentaband 4LO_8HI2","CITY","TRS Type","Traffic Migration 1G to 10G","PLN Status","PLN Upgrade Date","PS  Final Solution ","SOW PS","PS Scope Simple","PS Region","PS Scope Simple region","Weekly Plan PS RFS","PS done","Plan base laine","Weekly base line"
+    ];
+
     fetch(excelFile)
         .then(res => res.arrayBuffer())
         .then(data => {
@@ -173,10 +142,8 @@
         })
         .catch(err => {
             document.getElementById("status").innerHTML = "❌ <span style='color:red;'>Gagal memuat file Excel Duty Roaster.</span>";
-            console.error(err);
         });
 
-    // Switch Navigation Main Tab
     function switchMainTab(tab) {
         currentTab = tab;
         document.getElementById('tabBtnRoaster').className = tab === 'roaster' ? 'nav-tab active' : 'nav-tab';
@@ -189,58 +156,38 @@
         } else {
             document.getElementById('sectionRoaster').classList.add('hidden');
             document.getElementById('sectionPasteTools').classList.remove('hidden');
-            
             document.getElementById('rawData').value = '';
             document.getElementById('siteSelect').innerHTML = '<option value="">-- Pilih Site ID --</option>';
-            document.getElementById('viewBoq').classList.add('hidden');
-            document.getElementById('viewTracker').classList.add('hidden');
+            document.getElementById('viewResult').classList.add('hidden');
         }
     }
 
-    // TAB 1: Cari Site dari Duty Roaster Excel
     function cariSite() {
         if (!workbook) return alert("Tunggu sebentar, data Excel Duty Roaster masih dimuat.");
-        
         const keyword = document.getElementById("inputSite").value.toLowerCase().trim();
         if (!keyword) return alert("Masukkan Site ID terlebih dahulu!");
 
         let hasilTeks = "";
         let ketemu = false;
-
         const sheetName = "SITE LIST ID"; 
+        
         if (workbook.SheetNames.includes(sheetName)) {
             const worksheet = workbook.Sheets[sheetName];
             const jsonData = XLSX.utils.sheet_to_json(worksheet, {defval: ""});
 
             jsonData.forEach(row => {
-                const rowString = JSON.stringify(row).toLowerCase();
-                if (rowString.includes(keyword)) {
+                if (JSON.stringify(row).toLowerCase().includes(keyword)) {
                     ketemu = true;
-                    const oldSiteName = row[" OLD SITE NAME SIMPLIFY"] || row["OLD SITE NAME SIMPLIFY"] || "-";
-                    
-                    hasilTeks += `Berdasarkan sheet SITE LIST ID, berikut rinciannya:\n\n`;
-                    hasilTeks += `New Site ID IOH: ${row["New Site ID IOH"] || "-"}\n`;
-                    hasilTeks += `Old Site ID: ${row["OLD SITE ID"] || "-"}\n`;
-                    hasilTeks += `New Site Name: ${row["NEW SITE NAME"] || "-"}\n`;
-                    hasilTeks += `Old Site Name: ${oldSiteName}\n`;
-                    hasilTeks += `Status Site: ${row["STATUS SITE"] || "-"} (${row["Status on CAV"] || "-"})\n`;
-                    hasilTeks += `Sales Area (SA): ${row["New SA (Sales Area)"] || "-"}\n`;
-                    hasilTeks += `Region: ${row["New Region"] || "-"} (${row["Area EEJ or WEJ"] || "-"})\n`;
-                    hasilTeks += `Micro Cluster: ${row["New Micro Cluster"] || "-"}\n`;
-                    hasilTeks += `Koordinat: Lat ${row["LATITUDE"] || "-"}, Long ${row["LONGITUDE"] || "-"}\n`;
-                    hasilTeks += `Cluster CM / FM Office: ${row["FM Office"] || "-"}\n`;
-                    hasilTeks += `FME1 / CM: ${row["FME Synergy CM"] || "-"} (Kontak: ${row["1st NUMBER FME1 / CM"] || "-"})\n`;
-                    hasilTeks += `Subkontraktor: ${row["SUBCONT"] || "-"}\n`;
-                    hasilTeks += `RTS Adyawinsa: ${row["Name RTS Adyawinsa"] || "-"} (Kontak: ${row["CONTACT RTS Adyawinsa"] || "-"})\n`;
+                    Object.keys(row).forEach(key => {
+                        hasilTeks += `${key}: ${row[key] || '-'}\n`;
+                    });
                     hasilTeks += `=========================================\n\n`;
                 }
             });
         }
-
         document.getElementById("hasil").innerText = ketemu ? hasilTeks.trim() : `Site ID "${keyword}" tidak ditemukan dalam data.`;
     }
 
-    // Process Raw Data Paste (Bisa dengan Header maupun TANPA Header)
     function processPasteData() {
         const text = document.getElementById('rawData').value.trim();
         if (!text) { alert('Silakan masukkan data dari Excel terlebih dahulu!'); return; }
@@ -252,41 +199,33 @@
         const select = document.getElementById('siteSelect');
         select.innerHTML = '<option value="">-- Pilih Site ID --</option>';
 
-        let firstLineCols = lines[0].split('\t').map(c => c.trim().replace(/^"|"$/g, ''));
+        let firstCols = lines[0].split('\t').map(c => c.trim().replace(/^"|"$/g, ''));
         
-        // Deteksi apakah baris pertama adalah Header atau Data
-        let hasHeader = firstLineCols.includes("Site ID") || firstLineCols.includes("New Site ID") || firstLineCols.includes("NO") || firstLineCols.includes("Batch");
+        let hasHeader = firstCols.includes("Site ID") || firstCols.includes("New Site ID") || firstCols.includes("NO") || firstCols.includes("Batch");
 
-        let headers = [];
-        let startIdx = 0;
-
-        if (hasHeader) {
-            headers = firstLineCols;
-            startIdx = 1;
-        }
+        let activeMasterHeader = currentTab === 'boq' ? HEADERS_BOQ : HEADERS_TRACKER;
+        let headers = hasHeader ? firstCols : activeMasterHeader;
+        let startIdx = hasHeader ? 1 : 0;
 
         for (let i = startIdx; i < lines.length; i++) {
             const cols = lines[i].split('\t').map(c => c.trim().replace(/^"|"$/g, ''));
-            let rowObj = { _array: cols };
+            let rowPairList = [];
 
-            if (hasHeader) {
-                headers.forEach((h, idx) => {
-                    rowObj[h] = cols[idx] || '';
-                });
-            }
+            headers.forEach((hName, idx) => {
+                let val = cols[idx] !== undefined ? cols[idx] : '';
+                rowPairList.push({ label: hName, value: val !== '' ? val : '-' });
+            });
 
-            // Penentuan Site ID (Cek nama header ATAU ambil indeks bawaan BOQ/Tracker)
             let siteId = '';
             if (currentTab === 'boq') {
-                siteId = rowObj["Site ID"] || cols[1] || `SITE_${i}`;
+                siteId = cols[1] || `SITE_${i+1}`;
             } else {
-                siteId = rowObj["New Site ID"] || rowObj["Site ID"] || cols[6] || cols[1] || `SITE_${i}`;
+                siteId = cols[6] || cols[1] || `SITE_${i+1}`;
             }
-
-            let siteName = rowObj["SITE NAME"] || rowObj["New Site Name"] || cols[3] || cols[7] || '';
+            let siteName = cols[3] || cols[7] || '';
 
             if (siteId) {
-                parsedSitesObj[siteId] = rowObj;
+                parsedSitesObj[siteId] = rowPairList;
                 const opt = document.createElement('option');
                 opt.value = siteId;
                 opt.textContent = `${siteId} ${siteName ? '- ' + siteName : ''}`;
@@ -298,155 +237,55 @@
             select.selectedIndex = 1;
             displaySummary();
         } else {
-            alert('Gagal membaca data Site ID. Pastikan data berasal dari copy-paste Excel!');
+            alert('Gagal membaca data. Pastikan data berasal dari salinan baris Excel!');
         }
     }
 
-    // Ambil Nilai Berdasarkan Header Name ATAU Fallback ke Indeks Kolom Excel
-    function getVal(dataObj, keyName, indexFallback) {
-        if (!dataObj) return '-';
-        
-        // 1. Cari via nama Header
-        if (dataObj[keyName] !== undefined && dataObj[keyName] !== '') {
-            return dataObj[keyName];
-        }
-        
-        const foundKey = Object.keys(dataObj).find(k => k.toLowerCase() === keyName.toLowerCase());
-        if (foundKey && dataObj[foundKey] !== '') {
-            return dataObj[foundKey];
-        }
-
-        // 2. Jika tidak ketemu Header, ambil berdasarkan urutan Indeks Kolom Excel
-        if (indexFallback !== undefined && dataObj._array && dataObj._array[indexFallback] !== undefined) {
-            let val = dataObj._array[indexFallback].trim();
-            return val !== '' ? val : '-';
-        }
-
-        return '-';
-    }
-
-    function renderRow(label, val) {
-        return `<div class="data-row"><span class="data-label">${label}</span><span class="data-value">${val !== '' ? val : '-'}</span></div>`;
-    }
-
-    // Display Summary Result
     function displaySummary() {
         const siteId = document.getElementById('siteSelect').value;
-        const vBoq = document.getElementById('viewBoq');
-        const vTracker = document.getElementById('viewTracker');
+        const vRes = document.getElementById('viewResult');
+        const grid = document.getElementById('dynamicGrid');
+        const summaryGrid = document.getElementById('summaryGrid');
 
         if (!siteId || !parsedSitesObj[siteId]) {
-            vBoq.classList.add('hidden');
-            vTracker.classList.add('hidden');
+            vRes.classList.add('hidden');
             return;
         }
 
-        const data = parsedSitesObj[siteId];
+        const dataPairs = parsedSitesObj[siteId];
+        grid.innerHTML = '';
+        summaryGrid.innerHTML = '';
 
-        if (currentTab === 'boq') {
-            vTracker.classList.add('hidden');
-            
-            // 1. Site Identity (BOQ)
-            document.getElementById('boqSec1').innerHTML = 
-                renderRow('Site ID / NE ID', `<span class="badge">${getVal(data, 'Site ID', 1)}</span> / ${getVal(data, 'NE ID', 2)}`) +
-                renderRow('Site Name', getVal(data, 'SITE NAME', 3)) +
-                renderRow('Old Site ID / Operator', `${getVal(data, 'OLD SITE ID', 4)} / ${getVal(data, 'OPERATOR', 5)}`) +
-                renderRow('Cluster / Nano Cluster 5G', `${getVal(data, 'MC CLUSTER', 6)} / ${getVal(data, 'NANO CLUSTER 5G (3826)', 7)}`) +
-                renderRow('Area / Region', `${getVal(data, 'Area', 8)} / ${getVal(data, 'REGION', 9)}`) +
-                renderRow('Koordinat (Long, Lat)', `${getVal(data, 'LONG', 11)}, ${getVal(data, 'LAT', 12)}`);
+        document.getElementById('resultTitle').textContent = `📋 Detail Informasi Lengkap Site: ${siteId}`;
+        document.getElementById('totalColBadge').textContent = `${dataPairs.length} Kolom Terbaca`;
 
-            // 2. SOW & Program
-            document.getElementById('boqSec2').innerHTML = 
-                renderRow('SOW Utama', getVal(data, 'SOW', 13)) +
-                renderRow('Scope SOW Detail', getVal(data, 'Scope of Work G900 / U900 / L900 / G1800 / L1800 / U2100 / L2100 / N1800 /N2100/N2600/N700', 123)) +
-                renderRow('Remarks SOW / Rem. 1', `${getVal(data, 'Remark SOW', 368)} / ${getVal(data, 'Remarks1', 14)}`) +
-                renderRow('Program / Simplify Tag', `${getVal(data, 'Program', 122)} / ${getVal(data, 'Simplify Tag', 17)}`) +
-                renderRow('On Air Status', `<span class="badge badge-green">${getVal(data, 'On Air', 16)}</span>`);
+        let activeCount = 0;
 
-            // 3. Configuration & System Module
-            document.getElementById('boqSec3').innerHTML = 
-                renderRow('Config Existing', getVal(data, 'Config Existing', 24)) +
-                renderRow('Current Config', getVal(data, 'Current Config', 55)) +
-                renderRow('Config Final (Implementation)', `<b>${getVal(data, 'Config Final (Implementation)', 84)}</b>`) +
-                renderRow('Config HW & Band', getVal(data, 'Config HW & Band', 143)) +
-                renderRow('System Module (SM Existing ➡️ Final)', `${getVal(data, 'Existing SM', 43)} ➡️ <b>${getVal(data, 'Final SM', 138)}</b> (${getVal(data, 'SM Type', 139)})`) +
-                renderRow('RF Module (RF Existing ➡️ Final)', `${getVal(data, 'Existing RFM', 42)} ➡️ <b>${getVal(data, 'Final RFM', 137)}</b>`);
+        // Render Seluruh Data & Filter Rangkuman Non-Zero
+        dataPairs.forEach(item => {
+            // 1. Render Tampilan Utama
+            const div = document.createElement('div');
+            div.className = 'data-item';
+            div.innerHTML = `<span class="data-label">${item.label}</span><span class="data-value">${item.value}</span>`;
+            grid.appendChild(div);
 
-            // 4. Antenna & Feeder
-            document.getElementById('boqSec4').innerHTML = 
-                renderRow('Antenna Existing', getVal(data, 'ANTENNA EXISTING', 27)) +
-                renderRow('Antenna Type / Final', `${getVal(data, 'ANTENNA TYPE', 28)} ➡️ <b>${getVal(data, 'FINAL ANTENNA', 136)}</b>`) +
-                renderRow('# Existing / New Ant', `${getVal(data, '# Existing Antenna', 29)} / ${getVal(data, '# New Antenna', 30)}`) +
-                renderRow('Feeder System (1800/2100/2600/700)', `${getVal(data, 'Existing 1800Mhz.Feeder.System', 46)} / ${getVal(data, 'Existing 2600Mhz.Feeder.System', 48)} / ${getVal(data, 'Existing 700Mhz.Feeder.System', 49)}`);
+            // 2. Filter & Render Rangkuman Item Terisi (Tidak Kosong, Bukan '-', dan Bukan '0')
+            const valStr = String(item.value).trim().toLowerCase();
+            if (valStr !== '-' && valStr !== '' && valStr !== '0' && valStr !== 'null') {
+                activeCount++;
+                const sumDiv = document.createElement('div');
+                sumDiv.className = 'data-item summary-item';
+                sumDiv.innerHTML = `<span class="data-label">${item.label}</span><span class="data-value">${item.value}</span>`;
+                summaryGrid.appendChild(sumDiv);
+            }
+        });
 
-            // 5. Power Consumption
-            document.getElementById('boqSec5').innerHTML = 
-                renderRow('Existing Power (SM / RF / Total)', `${getVal(data, 'Existing SM Power Cons', 144)} W / ${getVal(data, 'Existing RF Power Cons', 145)} W / <b>${getVal(data, 'ExistingTotal Power Con', 146)} W</b>`) +
-                renderRow('Final Power (SM / RF / Total)', `${getVal(data, 'Final SM Power Cons', 147)} W / ${getVal(data, 'Final RF Power Cons', 148)} W / <b>${getVal(data, 'FinalTotal Power Con', 149)} W</b>`) +
-                renderRow('Delta Power Cons', `<span class="badge badge-orange">${getVal(data, 'Delta Power Cons', 150)} W</span>`);
-
-            // 6. Material Hardware (Selected Key BOQ)
-            document.getElementById('boqSec6').innerHTML = 
-                renderRow('ABIP AirScale Capacity', `${getVal(data, 'ABIP AirScale Capacity', 164)} unit`) +
-                renderRow('AVHA MAA 64T64R n41', `${getVal(data, 'AVHA AirScale MAA 64T64R 192AE n41 400W', 184)} unit`) +
-                renderRow('AKHD RRH 8T8R n41', `${getVal(data, 'AKHD AirScale RRH 8T8R n41 400W', 181)} unit`) +
-                renderRow('AHPDC Dual RRH 4T4R n8/n28', `${getVal(data, 'AHPDC AirScale Dual RRH 4T4R n8/n28 480W', 178)} unit`) +
-                renderRow('ARDC RFM n8 / AREC RFM n3', `${getVal(data, 'ARDC AirScale RFM 6T6R n8 480W', 171)} / ${getVal(data, 'AREC AirScale RFM 6T6R n3 480W', 173)}`) +
-                renderRow('SFP+ 10G (AOSI) / SFP28 (AOSC)', `${getVal(data, 'AOSI 10Gbs SFP+ 1310nm 1.4km SM I-temp ', 186)} / ${getVal(data, 'AOSC SFP28 2Km SM I-temp RS', 187)}`) +
-                renderRow('Bracket AMPI', `${getVal(data, 'AMPI MAA bracket 30 tilt +90 azimuth', 201)} unit`);
-
-            vBoq.classList.remove('hidden');
-
-        } else if (currentTab === 'tracker') {
-            vBoq.classList.add('hidden');
-
-            // 1. Identitas & Lokasi (Tracker)
-            document.getElementById('trSec1').innerHTML = 
-                renderRow('Batch / System Key / 700', `${getVal(data, 'Batch', 0)} / <span class="badge">${getVal(data, 'System Key', 1)}</span> / ${getVal(data, 'System Key 700', 2)}`) +
-                renderRow('New Site ID / Name', `<b>${getVal(data, 'New Site ID', 6)}</b> - ${getVal(data, 'New Site Name', 7)}`) +
-                renderRow('Kota / Kec / Prov', `${getVal(data, 'Kota / Kabupaten', 25)}, ${getVal(data, 'Kecamatan', 33)}, ${getVal(data, 'Province', 29)}`) +
-                renderRow('Region / Circle / Agglomeration', `${getVal(data, 'Region', 31)} / ${getVal(data, 'Circle', 30)} / ${getVal(data, 'Agglomeration', 32)}`) +
-                renderRow('Site Type / Simplify Tag', `${getVal(data, 'Site Type', 36)} | ${getVal(data, 'Simplify Tag', 37)}`);
-
-            // 2. Partner & Vendor (Tracker)
-            document.getElementById('trSec2').innerHTML = 
-                renderRow('TLP Name', getVal(data, 'TLP  Name', 8)) +
-                renderRow('Partner TSS / Change', `${getVal(data, 'Partner TSS', 9)} / ${getVal(data, 'Change Partner TSS', 10)}`) +
-                renderRow('Partner TI / Change', `${getVal(data, 'Partner TI', 11)} / ${getVal(data, 'Change Partner TI', 12)}`) +
-                renderRow('Partner NR700', getVal(data, 'Partner NR700', 13));
-
-            // 3. Document Status (Tracker)
-            document.getElementById('trSec3').innerHTML = 
-                renderRow('WBS Status', `<span class="badge badge-green">${getVal(data, 'wbs_status', 3)}</span>`) +
-                renderRow('POR TSS / SPO TSS 2600 / 700', `${getVal(data, 'POR TSS', 16)} / ${getVal(data, 'SPO TSS NR2600', 17)} / ${getVal(data, 'SPO TSS NR 700', 18)}`) +
-                renderRow('POR TI 2600 / SPO TI 2600 / 700', `${getVal(data, 'POR TI 2600', 21)} / ${getVal(data, 'SPO TI NR 2600', 22)} / ${getVal(data, 'SPO TI NR 700', 23)}`);
-
-            // 4. Progress Field Deployment (Tracker)
-            document.getElementById('trSec4').innerHTML = 
-                renderRow('STATUS PROGRESS', `<span class="badge badge-orange">${getVal(data, 'STATUS PROGESS', 57)}</span>`) +
-                renderRow('TSS Complete / TSSR Done', `${getVal(data, 'TSS  Complete', 48)} / ${getVal(data, 'TSSR done', 51)}`) +
-                renderRow('RFI / E2E RFI', `${getVal(data, 'RFI', 52)} / ${getVal(data, 'E2E RFI', 60)}`) +
-                renderRow('Install 2.6G / 700M', `${getVal(data, 'Install 2.6 GHz', 54)} / ${getVal(data, 'Install  700 Hz', 62)}`) +
-                renderRow('Integration 2.6G / 700M', `${getVal(data, 'Integration 2.6 GHz', 55)} / ${getVal(data, 'Integration 700 Hz', 64)}`) +
-                renderRow('ATP / HOTNEWS / DISMANTLE', `${getVal(data, 'ATP', 76)} / ${getVal(data, 'HOTNEWS', 75)} / ${getVal(data, 'DISMANTLE', 77)}`);
-
-            // 5. Power System & CAF (Tracker)
-            document.getElementById('trSec5').innerHTML = 
-                renderRow('Status CAF (RAN NOKIA)', getVal(data, 'Status CAF (RAN NOKIA)', 82)) +
-                renderRow('CAF Submit / Approved TLP', `${getVal(data, 'CAF Submit to TLP', 83)} / ${getVal(data, 'CAF Approved TLP', 84)}`) +
-                renderRow('PLN Status / Upgrade Date', `${getVal(data, 'PLN Status', 96)} (${getVal(data, 'PLN Upgrade Date', 97)})`) +
-                renderRow('PS Final Solution / SOW PS', `${getVal(data, 'PS  Final Solution ', 98)} / ${getVal(data, 'SOW PS', 99)}`);
-
-            // 6. Material Deployment (Tracker)
-            document.getElementById('trSec6').innerHTML = 
-                renderRow('SM Existing ➡️ Final', `${getVal(data, 'SM Existing', 78)} ➡️ <b>${getVal(data, 'SM Final', 79)}</b>`) +
-                renderRow('RF Existing ➡️ Final', `${getVal(data, 'RF Existing', 80)} ➡️ <b>${getVal(data, 'RF Final', 81)}</b>`) +
-                renderRow('RRU (ARDC / AREC / ARGB)', `${getVal(data, 'ARDC', 85)} / ${getVal(data, 'AREC', 86)} / ${getVal(data, 'ARGB', 87)}`) +
-                renderRow('RRU (AHEGH / AKHD / AHPDC / AVHA)', `${getVal(data, 'AHEGH', 88)} / ${getVal(data, 'AKHD', 89)} / ${getVal(data, 'AHPDC', 106)} / ${getVal(data, 'AVHA', 92)}`) +
-                renderRow('IPAA & Frame', `${getVal(data, 'IPAA', 105)} / ${getVal(data, 'AMMN Airscale IPAA AVHA Slide-in Frame C', 101)}`);
-
-            vTracker.classList.remove('hidden');
+        if (activeCount === 0) {
+            summaryGrid.innerHTML = '<div style="grid-column: 1/-1; color: #666; font-size:0.85rem; padding: 5px;">Tidak ada item/hardware dengan nilai terisi.</div>';
         }
+
+        document.getElementById('activeCountBadge').textContent = `${activeCount} Item Terisi`;
+        vRes.classList.remove('hidden');
     }
 </script>
 
